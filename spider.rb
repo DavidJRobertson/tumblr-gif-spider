@@ -58,6 +58,8 @@ def process_post(post, force_no_source=false)
 
   pp post
 
+  force_no_source = true if post['source_url'] == post['post_url']
+
   if(post['source_url'] && !force_no_source)
     # This isn't the original source of this post! Go get it from there.
     uri = URI(post['source_url'])
