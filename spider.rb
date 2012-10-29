@@ -109,4 +109,4 @@ def scour_todo_add(baseurl)
   #todo: Make this add to a todo list
   puts "Todo list appended with #{baseurl}"
 end
-scour_account "gaysexistheanswer.tumblr.com"
+scour_account "fuckyeahgifs.tumblr.com"
