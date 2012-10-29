@@ -15,7 +15,7 @@ end
 $tumblr = Tumblr.new
 
 class IndexedGif
-  def initializer()
+  def initializer
   end
   attr_accessor :gif_url, :source_url, :source_name, :source_id, :tags, :caption, :individual_caption
 
@@ -35,12 +35,12 @@ class String
 end
 
 def scour_account(baseurl)
-  bloginfo = $tumblr.blog_info(baseurl)
-  postcount = bloginfo['blog']['posts']
-  puts postcount.inspect
+  blog_info = $tumblr.blog_info(baseurl)
+  post_count = blog_info['blog']['posts']
+  puts post_count
 
   puts "Scouring account..."
-  (0..postcount).step(20) do |offset|
+  (0..post_count).step(20) do |offset|
     puts "Offset is #{offset}"
     $tumblr.posts(baseurl, type: :photo, offset: offset)['posts'].each do |post|
        process_post post
@@ -50,22 +50,26 @@ def scour_account(baseurl)
 end
 
 
-def process_post(post)
+def process_post(post, force_no_source=false)
 
   unless (post.class == Hash and post['type'] == 'photo')
     return false
   end
 
-  if(post['source_url'])
+  pp post
+
+  if(post['source_url'] && !force_no_source)
     # This isn't the original source of this post! Go get it from there.
     uri = URI(post['source_url'])
-    return false if uri.path == "" or uri.path == "/" # Bail out on malformed source URLs! todo: image should still be indexed!
+
+    return process_post(post, true) if uri.path == "" or uri.path == "/" # Bail out on malformed source URLs! todo: image should still be indexed!
+
     baseurl = uri.host
     id = uri.path.split('/')[2].to_i
 
 
     data = $tumblr.posts(baseurl, limit: 1, id: id)
-    return false if data.empty? # Bail out if the source post either a/ doesn't exist any more or b/ was never a tumblr post
+    return process_post(post, true) if data.empty? # Bail out if the source post either a/ doesn't exist any more or b/ was never a tumblr post
 
 
     process_post(data['posts'].first)
