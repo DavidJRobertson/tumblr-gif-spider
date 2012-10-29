@@ -56,8 +56,6 @@ def process_post(post, force_no_source=false)
     return false
   end
 
-  pp post
-
   force_no_source = true if post['source_url'] == post['post_url']
 
   if(post['source_url'] && !force_no_source)
