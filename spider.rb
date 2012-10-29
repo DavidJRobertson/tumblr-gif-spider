@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'tumblr_client'
 require 'uri'
+require 'pp'
 
 
 GIF_MAX_WIDTH  = 1024
@@ -21,7 +22,7 @@ class IndexedGif
   def store
     @indexed_time = Time.now.getutc
     ## Make this serialize and store to database
-    puts self.inspect
+    pp self
   end
 end
 
